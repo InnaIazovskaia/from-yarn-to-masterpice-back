@@ -2,14 +2,18 @@ import { type NextFunction, type Request, type Response } from "express";
 import CustomError from "../../CustomError/CustomError";
 import generalError from "./generalError";
 
-describe("Given the generalError middleware", () => {
-  const req = {} as Request;
-  const res: Partial<Response> = {
-    status: jest.fn().mockReturnThis(),
-    json: jest.fn().mockReturnValue({}),
-  };
-  const next = jest.fn() as NextFunction;
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
+const req = {} as Request;
+const res: Partial<Response> = {
+  status: jest.fn().mockReturnThis(),
+  json: jest.fn().mockReturnValue({}),
+};
+const next = jest.fn() as NextFunction;
+
+describe("Given the generalError middleware", () => {
   describe("When it receives a response and an error with status code 400 and error message 'Bad request'", () => {
     const statusCode = 400;
     const errorPublicMessage = "Bad request";
