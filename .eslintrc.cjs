@@ -8,6 +8,11 @@ module.exports = {
     {
       rules: {
         "@typescript-eslint/consistent-type-assertions": "off",
+        "@typescript-eslint/consistent-type-imports": "off",
+        "@typescript-eslint/consistent-type-definitions": [
+          "error",
+          "interface",
+        ],
       },
       extends: ["xo-typescript", "prettier"],
       files: ["*.ts", "*.tsx"],
@@ -22,6 +27,7 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
+    "new-cap": ["error", { capIsNewExceptions: ["Router"] }],
     "no-implicit-coercion": "off",
   },
 };
