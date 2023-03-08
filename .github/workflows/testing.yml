@@ -16,3 +16,11 @@ jobs:
 
       - name: 🧪 Testing
         run: npm test
+        env:
+          PORT: ${{ secrets.PORT }}
+          DEBUG: ${{ secrets.DEBUG }}
+          SALT: ${{ secrets.SALT }}
+          MONGODB_CONNECTION_URL: ${{ secrets.MONGODB_CONNECTION_URL }}
+          JWT_SECRET: ${{ JWT_SECRET }}
+          ALLOWED_ORIGIN_LOCAL: ${{ ALLOWED_ORIGIN_LOCAL }}
+          ALLOWED_ORIGIN_PROD: ${{ ALLOWED_ORIGIN_PROD }}
