@@ -17,6 +17,14 @@ jobs:
         run: npm ci
       - name: Coverage
         run: npm run test:coverage
+        env:
+          PORT: ${{ secrets.PORT }}
+          DEBUG: ${{ secrets.DEBUG }}
+          SALT: ${{ secrets.SALT }}
+          MONGODB_CONNECTION_URL: ${{ secrets.MONGODB_CONNECTION_URL }}
+          JWT_SECRET: ${{ JWT_SECRET }}
+          ALLOWED_ORIGIN_LOCAL: ${{ ALLOWED_ORIGIN_LOCAL }}
+          ALLOWED_ORIGIN_PROD: ${{ ALLOWED_ORIGIN_PROD }}
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
