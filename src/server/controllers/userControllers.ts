@@ -1,9 +1,12 @@
 import { type NextFunction, type Request, type Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import User from "../../database/models/User";
-import { TokenPayload, UserCredentials } from "./types";
-import { notFoundUserError, wrongUserPasswordError } from "../../utils/errors";
+import User from "../../database/models/User.js";
+import { TokenPayload, UserCredentials } from "./types.js";
+import {
+  notFoundUserError,
+  wrongUserPasswordError,
+} from "../../utils/errors.js";
 
 export const userLogin = async (
   req: Request<
