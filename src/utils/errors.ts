@@ -1,4 +1,4 @@
-import CustomError from "../CustomError/CustomError";
+import CustomError from "../CustomError/CustomError.js";
 
 export const notFoundUserError = new CustomError(
   "Wrong credentials",
