@@ -4,6 +4,7 @@ import CustomError from "../../CustomError/CustomError.js";
 const allowedOrigins: string[] = [
   process.env.ALLOWED_ORIGIN_LOCAL!,
   process.env.ALLOWED_ORIGIN_PROD!,
+  process.env.ALLOWED_ORIGIN_DEV!,
 ];
 
 const corsOptions: CorsOptions = {
