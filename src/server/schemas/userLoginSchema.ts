@@ -1,7 +1,7 @@
 import { Joi } from "express-validation";
 import { UserCredentials } from "../controllers/types.js";
 
-const userLoginShema = {
+const userLoginSchema = {
   body: Joi.object<UserCredentials>({
     username: Joi.string().required().messages({
       "string.empty": "Username is required",
@@ -12,4 +12,4 @@ const userLoginShema = {
   }),
 };
 
-export default userLoginShema;
+export default userLoginSchema;
