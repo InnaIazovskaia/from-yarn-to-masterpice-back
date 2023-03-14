@@ -11,3 +11,9 @@ export const wrongUserPasswordError = new CustomError(
   401,
   "Wrong password"
 );
+
+export const userAlreadyExistsError = new CustomError(
+  "The username is already in use",
+  409,
+  "The user already exists"
+);

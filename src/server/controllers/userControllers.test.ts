@@ -1,8 +1,8 @@
 import { type NextFunction, type Request, type Response } from "express";
 import CustomError from "../../CustomError/CustomError";
 import User from "../../database/models/User";
-import { UserCredentials } from "./types";
-import { userLogin } from "./userControllers";
+import { UserCredentials, UserRegisterCredentials } from "./types";
+import { userLogin, userRegister } from "./userControllers";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
@@ -11,11 +11,6 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-const req = {} as Request<
-  Record<string, unknown>,
-  Record<string, unknown>,
-  UserCredentials
->;
 const res: Partial<Response> = {
   status: jest.fn().mockReturnThis(),
   json: jest.fn().mockReturnValue({}),
@@ -23,6 +18,12 @@ const res: Partial<Response> = {
 const next = jest.fn() as NextFunction;
 
 describe("Given a userLogin controller", () => {
+  const req = {} as Request<
+    Record<string, unknown>,
+    Record<string, unknown>,
+    UserCredentials
+  >;
+
   const mockUser: UserCredentials = {
     username: "sunny",
     password: "sunnypassword",
@@ -104,6 +105,89 @@ describe("Given a userLogin controller", () => {
       await userLogin(req, res as Response, next);
 
       expect(next).toHaveBeenCalledWith(error);
+    });
+  });
+});
+
+describe("Given a userRegister controller", () => {
+  const req = {} as Request<
+    Record<string, unknown>,
+    Record<string, unknown>,
+    UserRegisterCredentials
+  >;
+
+  const mockUser = {
+    username: "Marta",
+    password: "123456789",
+    email: "marta@mail.com",
+  };
+  const hashedPassword = "askdhgiahbviaowehg";
+
+  describe("When it receives a request with username 'Marta', password '123456789' and email 'marta@mail.com'", () => {
+    test("Then it should call json method of the received response with message 'The user Marta has been created' and method status with code 201", async () => {
+      const expectedStatusCode = 201;
+      const expectedMessage = { message: "The user Marta has been created" };
+      req.body = mockUser;
+
+      bcrypt.hash = jest.fn().mockResolvedValue(hashedPassword);
+      User.create = jest.fn().mockResolvedValue(mockUser);
+
+      await userRegister(req, res as Response, next);
+
+      expect(res.status).toHaveBeenCalledWith(expectedStatusCode);
+      expect(res.json).toHaveBeenCalledWith(expectedMessage);
+    });
+  });
+
+  describe("When it receives a request with username 'Marta', password '123456789' and email 'marta@mail.com' and the username already exista in database", () => {
+    test("Then it should call received next function with error with status code 409 and the public message 'The username is already in use' and the message 'The user already exists'", async () => {
+      const duplicateError = new Error("duplicate");
+
+      const expectedErrorPublicMessage = "The username is already in use";
+      const expectedErrorStatusCode = 409;
+      const expectedErrorMessage = "The user already exists";
+
+      const expectedError = new CustomError(
+        expectedErrorPublicMessage,
+        expectedErrorStatusCode,
+        expectedErrorMessage
+      );
+
+      bcrypt.hash = jest.fn().mockResolvedValue(hashedPassword);
+      User.create = jest.fn().mockRejectedValue(duplicateError);
+
+      await userRegister(req, res as Response, next);
+
+      expect(next).toHaveBeenCalledWith(expectedError);
+    });
+  });
+
+  describe("When it receives a request without username", () => {
+    test("Then it shold call received next function with public message 'There was a problem creating the user', status code 500 and message 'The user couldn't be created'", async () => {
+      const mockUserWithoutUsername = {
+        ...mockUser,
+        username: "",
+      };
+
+      const expectedErrorPublicMessage =
+        "There was a problem creating the user";
+      const expectedErrorStatusCode = 500;
+      const expectedErrorMessage = "The user couldn't be created";
+
+      const expectedError = new CustomError(
+        expectedErrorPublicMessage,
+        expectedErrorStatusCode,
+        expectedErrorMessage
+      );
+
+      const error = new Error(expectedErrorMessage);
+
+      req.body = mockUserWithoutUsername;
+      User.create = jest.fn().mockRejectedValue(error);
+
+      await userRegister(req, res as Response, next);
+
+      expect(next).toHaveBeenCalledWith(expectedError);
     });
   });
 });
